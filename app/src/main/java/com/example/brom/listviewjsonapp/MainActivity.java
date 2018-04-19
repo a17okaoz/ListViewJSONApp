@@ -11,11 +11,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
-// Create a new class, Mountain, that can hold your JSON data
+// Create a new class, Mountain, that can hold your JSON data (Klar)
 
-// Create a ListView as in "Assignment 1 - Toast and ListView"
+// Create a ListView as in "Assignment 1 - Toast and ListView" (Klar)
 
 // Retrieve data from Internet service using AsyncTask and the included networking code
 
@@ -25,11 +28,21 @@ import java.net.URL;
 
 
 public class MainActivity extends AppCompatActivity {
+    private String[] mountainNames = {"Matterhorn","Mont Blanc","Denali"};
+    private String[] mountainLocations = {"Alps","Alps","Alaska"};
+    private int[] mountainHeights ={4478,4808,6190};
+    private List<Mountain> mountainlist = new ArrayList<Mountain>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        List<String> listData = new ArrayList<String>(Arrays.asList(mountainNames));
+        for(int start = 0; start < mountainNames.length; start++){
+            Mountain berg = new Mountain(mountainNames[start],mountainLocations[start], mountainHeights[start]);
+
+            mountainlist.add(berg);
+        }
     }
 
     private class FetchData extends AsyncTask<Void,Void,String>{
