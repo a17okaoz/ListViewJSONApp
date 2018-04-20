@@ -36,8 +36,4 @@ public class Mountain {
         str+="m.";
         return str;
     }
-
-    public void setHeight(int newHeight){
-        height=newHeight;
-    }
 }
