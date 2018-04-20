@@ -9,6 +9,8 @@ public class Mountain {
     private String name;
     private String location;
     private int height;
+    private String url;
+
 
     //Constructor
     public Mountain (String inName, String inLocation, int inHeight){

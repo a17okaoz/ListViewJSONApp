@@ -10,6 +10,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,9 +37,9 @@ import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
-    private String[] mountainNames = {"Matterhorn","Mont Blanc","Denali"};
-    private String[] mountainLocations = {"Alps","Alps","Alaska"};
-    private int[] mountainHeights ={4478,4808,6190};
+    private String[] mountainNames = {"Matterhorn", "Mont Blanc", "Denali"};
+    private String[] mountainLocations = {"Alps", "Alps", "Alaska"};
+    private int[] mountainHeights = {4478, 4808, 6190};
     private List<Mountain> mountainList = new ArrayList<Mountain>();
     protected ArrayAdapter adapter;
 
@@ -43,31 +47,34 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        FetchData getJason = new FetchData();
+        getJason.execute();
+
         List<String> listData = new ArrayList<String>(Arrays.asList(mountainNames));
-        for(int start = 0; start < mountainNames.length; start++){
-            Mountain berg = new Mountain(mountainNames[start],mountainLocations[start], mountainHeights[start]);
+        for (int start = 0; start < mountainNames.length; start++) {
+            Mountain berg = new Mountain(mountainNames[start], mountainLocations[start], mountainHeights[start]);
 
             mountainList.add(berg);
         }
 
-        adapter = new ArrayAdapter(getApplicationContext(),R.layout.list_item_textview,
-                R.id.my_item_listview,mountainList);
+        adapter = new ArrayAdapter(getApplicationContext(), R.layout.list_item_textview,
+                R.id.my_item_listview, mountainList);
 
-        ListView myListView = (ListView)findViewById(R.id.list_view);
+        ListView myListView = (ListView) findViewById(R.id.list_view);
         myListView.setAdapter(adapter);
 
         myListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Mountain b = mountainList.get(position);
                 Toast toast = Toast.makeText(getApplicationContext(),
-                        mountainNames[position] + " " + mountainLocations[position] + " " + mountainHeights[position] ,
-                        Toast.LENGTH_SHORT);
+                        b.info(), Toast.LENGTH_SHORT);
                 toast.show();
 
             }
         });
     }
-
     private class FetchData extends AsyncTask<Void,Void,String>{
         @Override
         protected String doInBackground(Void... params) {
@@ -81,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
 
             try {
                 // Construct the URL for the Internet service
-                URL url = new URL("http://wwwlab.iit.his.se/brom/kurser/mobilprog/jsonservice.php");
+                URL url = new URL("http://wwwlab.iit.his.se/brom/kurser/mobilprog/dbservice/admin/getdataasjson.php?type=brom");
 
                 // Create the request to the PHP-service, and open the connection
                 urlConnection = (HttpURLConnection) url.openConnection();
@@ -129,15 +136,57 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+
         @Override
         protected void onPostExecute(String o) {
             super.onPostExecute(o);
-            // This code executes after we have received our data. The String object o holds
-            // the un-parsed JSON string or is null if we had an IOException during the fetch.
+            try {
+                JSONArray mountainsberg = new JSONArray(o);
+                for (int i = 0; i < mountainsberg.length(); i++){
+                    JSONObject bergs = mountainsberg.getJSONObject(i);
 
-            // Implement a parsing code that loops through the entire JSON and creates objects
-            // of our newly created Mountain class.
+                    String name = bergs.getString("name");
+                    String location = bergs.getString("location");
+                    int height = bergs.getInt("size");
+
+                    Mountain ms = new Mountain(name, location, height);
+                    mountainList.add(ms);
+
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
 
+
+/*
+
+
+ // This code executes after we have received our data. The String object o holds
+            // the un-parsed JSON string or is null if we had an IOException during the fetch.
+
+            // Implement a parsing code that loops through the entire JSON and creates objects
+            // of our newly created Mountain class.
+            try {
+                JSONArray mountainsberg = new JSONArray(o);
+                for (int i = 0; i < mountainsberg.length(); i++){
+                    JSONObject bergs = mountainsberg.getJSONObject(i);
+
+                    String name = bergs.getString("name");
+                    String location = bergs.getString("location");
+                    int height = bergs.getInt("size");
+
+                    String auxdata = bergs.getString("auxdata");
+                    JSONObject aux = new JSONObject(auxdata);
+                    String url = aux.getString("img");
+
+                    Mountain ms = new Mountain(name, location, height);
+                    mountainList.add(ms);
+
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+ */
