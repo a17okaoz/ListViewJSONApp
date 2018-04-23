@@ -4,6 +4,9 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -24,16 +27,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
 // Create a new class, Mountain, that can hold your JSON data (Klar)
-
 // Create a ListView as in "Assignment 1 - Toast and ListView" (Klar)
-
-// Retrieve data from Internet service using AsyncTask and the included networking code
-
-// Parse the retrieved JSON and update the ListView adapter
-
-// Implement a "refresh" functionality using Android's menu system
+// Retrieve data from Internet service using AsyncTask and the included networking code (Klar)
+// Parse the retrieved JSON and update the ListView adapter (Klar)
+// Implement a "refresh" functionality using Android's menu system (Klar)
 
 
 public class MainActivity extends AppCompatActivity {
@@ -42,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private int[] mountainHeights = {4478, 4808, 6190};
     private List<Mountain> mountainList = new ArrayList<Mountain>();
     protected ArrayAdapter adapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,10 +70,28 @@ public class MainActivity extends AppCompatActivity {
                 Toast toast = Toast.makeText(getApplicationContext(),
                         b.info(), Toast.LENGTH_SHORT);
                 toast.show();
-
             }
         });
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        int id = item.getItemId();
+
+        if(id == R.id.action_refresh) {
+
+            new FetchData().execute();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private class FetchData extends AsyncTask<Void,Void,String>{
         @Override
         protected String doInBackground(Void... params) {
@@ -159,34 +176,3 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 }
-
-
-/*
-
-
- // This code executes after we have received our data. The String object o holds
-            // the un-parsed JSON string or is null if we had an IOException during the fetch.
-
-            // Implement a parsing code that loops through the entire JSON and creates objects
-            // of our newly created Mountain class.
-            try {
-                JSONArray mountainsberg = new JSONArray(o);
-                for (int i = 0; i < mountainsberg.length(); i++){
-                    JSONObject bergs = mountainsberg.getJSONObject(i);
-
-                    String name = bergs.getString("name");
-                    String location = bergs.getString("location");
-                    int height = bergs.getInt("size");
-
-                    String auxdata = bergs.getString("auxdata");
-                    JSONObject aux = new JSONObject(auxdata);
-                    String url = aux.getString("img");
-
-                    Mountain ms = new Mountain(name, location, height);
-                    mountainList.add(ms);
-
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
- */
