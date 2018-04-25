@@ -85,8 +85,10 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if(id == R.id.action_refresh) {
-
+            adapter.clear();
             new FetchData().execute();
+            Toast refreshed = Toast.makeText(this, "List have been refreshed", Toast.LENGTH_SHORT);
+            refreshed.show();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -157,6 +159,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String o) {
             super.onPostExecute(o);
+
             try {
                 JSONArray mountainsberg = new JSONArray(o);
                 for (int i = 0; i < mountainsberg.length(); i++){
@@ -168,7 +171,6 @@ public class MainActivity extends AppCompatActivity {
 
                     Mountain ms = new Mountain(name, location, height);
                     adapter.add(ms);
-
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
