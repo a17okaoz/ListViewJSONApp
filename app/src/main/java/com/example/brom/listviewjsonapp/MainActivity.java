@@ -167,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
                     int height = bergs.getInt("size");
 
                     Mountain ms = new Mountain(name, location, height);
-                    mountainList.add(ms);
+                    adapter.add(ms);
 
                 }
             } catch (JSONException e) {
