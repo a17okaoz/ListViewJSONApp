@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">ListViewJSONApp</string>
-    <string name="action_refresh">Refresh</string>
+    <string name="app_name">Kattappen</string>
+    <string name="action_refresh">Målgrupp</string>
 </resources>
