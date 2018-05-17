@@ -5,7 +5,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -27,20 +26,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-// Create a new class, Mountain, that can hold your JSON data (Klar)
-// Create a ListView as in "Assignment 1 - Toast and ListView" (Klar)
-// Retrieve data from Internet service using AsyncTask and the included networking code (Klar)
-// Parse the retrieved JSON and update the ListView adapter (Klar)
-// Implement a "refresh" functionality using Android's menu system (Klar)
-
-
 public class MainActivity extends AppCompatActivity {
-    private String[] mountainNames = {"Matterhorn", "Mont Blanc", "Denali"};
-    private String[] mountainLocations = {"Alps", "Alps", "Alaska"};
-    private int[] mountainHeights = {4478, 4808, 6190};
-    private List<Mountain> mountainList = new ArrayList<Mountain>();
-    protected ArrayAdapter adapter;
 
+    private List<Kattdjur> kattlist = new ArrayList<Kattdjur>();
+    protected ArrayAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,15 +39,8 @@ public class MainActivity extends AppCompatActivity {
         FetchData getJason = new FetchData();
         getJason.execute();
 
-        List<String> listData = new ArrayList<String>(Arrays.asList(mountainNames));
-        for (int start = 0; start < mountainNames.length; start++) {
-            Mountain berg = new Mountain(mountainNames[start], mountainLocations[start], mountainHeights[start]);
-
-            mountainList.add(berg);
-        }
-
         adapter = new ArrayAdapter(getApplicationContext(), R.layout.list_item_textview,
-                R.id.my_item_listview, mountainList);
+                R.id.my_item_listview, kattlist);
 
         ListView myListView = (ListView) findViewById(R.id.list_view);
         myListView.setAdapter(adapter);
@@ -66,9 +48,9 @@ public class MainActivity extends AppCompatActivity {
         myListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Mountain b = mountainList.get(position);
+                Kattdjur cat = kattlist.get(position);
                 Toast toast = Toast.makeText(getApplicationContext(),
-                        b.info(), Toast.LENGTH_SHORT);
+                        cat.info(), Toast.LENGTH_LONG);
                 toast.show();
             }
         });
@@ -107,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
 
             try {
                 // Construct the URL for the Internet service
-                URL url = new URL("http://wwwlab.iit.his.se/brom/kurser/mobilprog/dbservice/admin/getdataasjson.php?type=brom");
+                URL url = new URL("http://wwwlab.iit.his.se/brom/kurser/mobilprog/dbservice/admin/getdataasjson.php?type=a17okaoz");
 
                 // Create the request to the PHP-service, and open the connection
                 urlConnection = (HttpURLConnection) url.openConnection();
@@ -161,16 +143,20 @@ public class MainActivity extends AppCompatActivity {
             super.onPostExecute(o);
 
             try {
-                JSONArray mountainsberg = new JSONArray(o);
-                for (int i = 0; i < mountainsberg.length(); i++){
-                    JSONObject bergs = mountainsberg.getJSONObject(i);
+                JSONArray katter = new JSONArray(o);
+                for (int i = 0; i < katter.length(); i++){
+                    JSONObject katt = katter.getJSONObject(i);
 
-                    String name = bergs.getString("name");
-                    String location = bergs.getString("location");
-                    int height = bergs.getInt("size");
+                    int ID = katt.getInt("ID");
+                    String name = katt.getString("name");
+                    String company = katt.getString("company");
+                    String category = katt.getString("category");
+                    int size = katt.getInt("size");
+                    String location = katt.getString("location");
+                    String auxdata = katt.getString("auxdata");
 
-                    Mountain ms = new Mountain(name, location, height);
-                    adapter.add(ms);
+                    Kattdjur kd = new Kattdjur(ID, name, company, category, location, size, auxdata);
+                    adapter.add(kd);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
