@@ -69,6 +69,11 @@ public class MainActivity extends AppCompatActivity {
         if(id == R.id.action_refresh) {
             adapter.clear();
             new FetchData().execute();
+            Toast refreshed = Toast.makeText(this, "The site is refreshed", Toast.LENGTH_LONG);
+            refreshed.show();
+            return true;
+        }
+        if(id == R.id.action_about) {
             Toast refreshed = Toast.makeText(this, "The audience for this site is for all the animal lovers", Toast.LENGTH_LONG);
             refreshed.show();
             return true;
